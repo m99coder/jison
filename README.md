@@ -54,6 +54,11 @@ Full cli option list:
        -p TYPE, --parser-type TYPE   The type of algorithm to use for the parser (lr0, slr, lalr, lr)
        -V, --version                 print version and exit
 
+A new module type was added `angular`.
+
+To use it call:
+
+    node lib/cli.js examples/calculator.jison -o ./calculator.js -m angular
 
 Usage from a CommonJS module
 --------------------------
