@@ -240,7 +240,7 @@ e
 
 which compiles down to this JSON representation used directly by Jison:
 
-```json
+```
 {
 	"lex": {
 		"rules": [
@@ -364,7 +364,7 @@ Additionally, use `this.popState()` within an action to revert to the previous s
 
 Using the JSON format, start conditions are defined with an array before the rule’s matcher:
 
-```json
+```
 {
 	"rules": [
 		[["expect"], "[0-9]+\".\"[0-9]+", "console.log('found a float, = ' + yytext);"]
@@ -662,7 +662,7 @@ if (lexer.isEOF(firstToken)) {
 
 After setting the input, you call the `nextToken()` to make the lexer read the next token. Each call to `nextToken()` will yield a new token, or a special object meaning you reached the end of the input. A non-EOF token looks like this:
 
-```json
+```
 {
 	name: "integer", // this is the name given to the token by the action
 	value: 12, // the action parsed the input into a number
