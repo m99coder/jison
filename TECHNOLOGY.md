@@ -6,7 +6,7 @@ In computer science, BNF (Backus Normal Form or Backus-Naur Form) is one of the 
 
 A BNF specification is a set of derivation rules, written as
 
-```javascript
+```
 <symbol> ::= __expression__
 ```
 
@@ -16,7 +16,7 @@ where `<symbol>` is a *nonterminal*, and the `__expression__` consists of one or
 
 As an example, consider this possible BNF for a U.S. postal address:
 
-```javascript
+```
  <postal-address> ::= <name-part> <street-address> <zip-part>
       <name-part> ::= <personal-part> <last-name> <opt-suffix-part> <EOL>
                     | <personal-part> <name-part>
@@ -45,7 +45,7 @@ EBNF is a code that expresses the grammar of a formal language. An EBNF consists
 
 The EBNF defines production rules where sequences of symbols are respectively assigned to a nonterminal:
 
-```javascript
+```
 digit excluding zero = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
 digit                = "0" | digit excluding zero ;
 ```
@@ -54,7 +54,7 @@ This production rule defines the nonterminal *digit* which is on the left side o
 
 A production rule can also include a sequence of terminals or nonterminals, each separated by a comma:
 
-```javascript
+```
 twelve                          = "1", "2" ;
 two hundred one                 = "2", "0", "1" ;
 three hundred twelche           = "3", twelve ;
@@ -63,7 +63,7 @@ twelve thousand two hundred one = twelve, two hundred one ;
 
 Expressions that may be omitted or repeated can be represented through curly braces `{ ... }`.
 
-```javascript
+```
 natural number = digit excluding zero, { digit } ;
 ```
 
@@ -71,7 +71,7 @@ In this case, the strings *1*, *2*, ..., *10*, ..., *12345*, ... are correct exp
 
 An option can be represented through squared brackets `[ ... ]`. That is, everything that is set within the square brackets may be present just once, or not at all:
 
-```javascript
+```
 integer = "0" | [ "-" ], natural number ;
 ```
 
@@ -96,7 +96,7 @@ exception | -
 
 A Pascal-like programming language that allows only assignments can be defined in EBNF as follows:
 
-```javascript
+```
 (* a simple program syntax in EBNF *)
 program = 'PROGRAM', white space, identifier, white space,
           'BEGIN', white space,
@@ -117,7 +117,7 @@ all characters = ? all visible characters ? ;
 
 A syntactically correct program then would be:
 
-```javascript
+```
 PROGRAM DEMO1
 BEGIN
 	A:=3;
@@ -176,7 +176,7 @@ The process of parsing a language commonly involves two phases: **lexical analys
 
 For example, here is the grammar for the calculator parser:
 
-```javascript
+```
 /* description: Parses and executes mathematical expressions. */
 
 /* lexical grammar */
@@ -305,7 +305,7 @@ Jison includes a rather rudimentary scanner generator, though **any module that 
 
 The format of the input file (including macro support) and the style of the pattern matchers are modeled after Flex. Several metacharacters have been added, but there is also one minor inconvenience compared to Flex patterns, namely exact string patterns must be placed in quotes e.g.:
 
-```javascript
+```
 // Bad
 [0-9]+zomg   print(yytext);
 
@@ -319,7 +319,7 @@ The format of the input file (including macro support) and the style of the patt
 
 A recently added feature are start conditions, which allow certain rules to only match in certain states. If the lexer is not in that state, then the rule is ignored. The lexer starts in the `INITIAL` state, but can move to new states specified by you. An example below shows where Jison differs, namely `this.begin('state')` instead of `BEGIN(STATE)` for changing states within an action:
 
-```javascript
+```
 %s expect
 
 %%
@@ -346,7 +346,7 @@ If you use `%x` instead of `%s` to declare your start condition then *only* rule
 
 Consider the following example of a scanner that simply scans all double-quote delimited strings in a text file but disallows newlines inside quotations:
 
-```javascript
+```
 %x string
 
 %%
@@ -380,7 +380,7 @@ Jison’s lexical analyzer will track line number and column number information 
 
 You don’t have to use the builtin Jison lexical scanner. An object with a `lex` and a `setInput` function would suffice, e.g.:
 
-```javascript
+```
 parser.lexer = {
 	lex: function() {
 		return 'NIL';
@@ -394,7 +394,7 @@ This lexer would simply return `NIL` tokens *ad infinitum*.
 
 The following example demonstrates a scanner that looks for upper and lower case letters, ignoring all whitespace.
 
-```javascript
+```
 // myscanner.js
 
 function AlphabetScanner() {
@@ -468,7 +468,7 @@ Jison supports inline code blocks like Bison, but also exposes state that can be
 
 An example from `orderly.js`:
 
-```javascript
+```
 var parser = require('./orderly/parse').parser;
 
 // set parser's shared scope
@@ -531,7 +531,7 @@ jacob -t tokens.jacoblex [-l lexer.js] -g grammar.jacobgram [-p parser.js]
 
 In order for Jacob to create a lexer you have to provide it with a `.jacoblex` file which looks like the following:
 
-```javascript
+```
 %moduleName MyLexer
 
 %%
@@ -615,7 +615,7 @@ This is useful to ignore a given input. Since the action won’t return any toke
 
 Another common situation is having to parse the input to have a meaningful token:
 
-```javascript
+```
 <>{digits}+ {
     this.jjval = parseInt(this.jjtext);
     return 'integer';
@@ -624,7 +624,7 @@ Another common situation is having to parse the input to have a meaningful token
 
 Inside actions, this points to the lexer itself. In the lexer `jjtext` contains the text the regular expression matched. `jjval` by default contains the same text as `jjtext` but you can change it inside the action. In the example above the text is parsed to get an integer value, which is then stored in `jjval`. Note that `jjval` is the value that is used in the parsing phase by your interpreter/compiler. Another powerful thing you could do inside an action is to change the lexer’s state. Take this example:
 
-```javascript
+```
 <>\/\* { this.pushState('BLOCKCOMMENT'); }
 <BLOCKCOMMENT>\*\/ { this.popState(); }
 <BLOCKCOMMENT>(\n|\r|.) { }
@@ -648,7 +648,7 @@ Of course the generated Lexer is a JavaScript object, so you can dynamically add
 
 After you generate a lexer, you create one using the constructor:
 
-```javascript
+```
 var MyLexer = require('mylexer'); // mylexer.js being the file generated by jacob
 var lexer = new MyLexer();
 lexer.setInput('string to be parsed');
@@ -685,7 +685,7 @@ In order to generate a parser you need to give Jacob the specification file cont
 
 Here is an example of a jacob grammar file:
 
-```javascript
+```
 %moduleName MyParser
 
 %left 'PLUS' '-'
@@ -749,7 +749,7 @@ Shortcut | Description
 
 Grouping example:
 
-```javascript
+```
 Assignment = Identifier ':=' ( 'integer' | Identifier | 'string' ) function(id, _, rhsvalue) { /* ... */ };
 ```
 
@@ -757,14 +757,14 @@ Assignment = Identifier ':=' ( 'integer' | Identifier | 'string' ) function(id, 
 
 Like with the Lexer, you create the parser using its constructor
 
-```javascript
+```
 var MyParser = require('./myparser'); // myparser.js is the file generated by jacob
 var parser = new MyParser();
 ```
 
 To start the parsing, you call the `parse()` method, passing a lexer as the first parameter:
 
-```javascript
+```
 var MyLexer = require('./mylexer'); // mylexer.js is the file generated by jacob
 var lexer = new MyLexer();
 parser.parse(lexer);
@@ -778,7 +778,7 @@ Usually, though, for achieving non trivial results, you must integrate the gramm
 
 When the grammar actions are evaluated, their *this* is referring to an object that acts as an execution context. This can be used to store data, identifier tables, and so on. You can pass your own object to act as execution context in the `parse()` method:
 
-```javascript
+```
 var ctx = {}; // This object can be whatever you need. Grammar actions will be evaluated in this object's context
 
 parser.parse(lexer, ctx);
@@ -791,7 +791,7 @@ If not provided, the parser will create an empty object to be used as execution 
 
 Inside the actions, you might need to use other modules, for example containing the classes of your AST. To make those modules accessible to your grammar actions during parsing time, you pass an environment object to the parser constructor:
 
-```javascript
+```
 var MyParser = require('myparser');
 var astclasses = require('astclasses');
 var othermodule = require('someothermodule');
@@ -804,7 +804,7 @@ var parser = new MyParser({
 
 The actions of your grammar can reach the environmental module using any of the following names: *environment*, *env*, *modules*, *imports*. For example:
 
-```javascript
+```
 Statement = 'id' '=' Expression function(id, _, _exp) {
 	return new imports.ast.Assigment(id, exp);
 }
