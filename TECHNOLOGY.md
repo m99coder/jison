@@ -162,6 +162,62 @@ In computer science, a Simple LR or SLR parser is a type of LR parser with small
 
 [http://dinosaur.compilertools.net/bison/](http://dinosaur.compilertools.net/bison/)
 
+## Languages and Context-Free Grammars
+
+In order for Bison to parse a language, it must be described by a **context-free grammar**. This means that you specify one or more **syntactic groupings** and give rules for constructing them from their parts. For example, in the C language, one kind of grouping is called an *expression*. One rule for making an expression might be „An expression can be made of a minus sign and another expression“. Another would be „An expression can be an integer“. As you can see, rules are often recursive, but there must be at least one rule which leads out of the recursion.
+
+The most common formal system for presenting such rules for humans to read is **Backus-Naur Form** or *BNF*, which was developed in order to specify the language Algol 60. Any grammar expressed in BNF is a context-free grammar. The input to Bison is essentially machine-readable BNF.
+
+Not all context-free languages can be handled by Bison, only those that are LALR(1). In brief, this means that it must be possible to tell how to parse any portion of an input string with just a single token of look-ahead. Strictly speaking, that is a description of an LR(1) grammar, and LALR(1) involves additional restrictions that are hard to explain simply; but it is rare in actual practice to find an LR(1) grammar that fails to be LALR(1).
+
+In the formal grammatical rules for a language, each kind of syntactic unit or grouping is named by a **symbol**. Those which are built by grouping smaller constructs according to grammatical rules are called **nonterminal symbols**; thos which can’t be subdivided are called **terminal symbols** or **token types**. We call a piece of input corresponding to a single terminal symbol a **token**, and a piece corresponding to a single nonterminal symbol a **grouping**.
+
+We can use the C language as an example of what symbols, terminal and nonterminal, mean. The tokens of C are identifiers, constants (numeric and string), and the various keywords, arithmetic operators and punctuation marks. So the terminal symbols of a grammar for C include *identifier*, *number*, *string*, plus one symbol for each keyword, operator or punctuation mark: *if*, *return*, *const*, *static*, *int*, *char*, *plus-sign*, *open-brace*, *close-brace*, *comma* and many more.
+
+Here is a simple C function subdivided into tokens:
+
+```c
+int                /* keyword `int` */
+square (x)         /* identifier, open-paren, identifier, close-paren */
+    int x;         /* keyword `int`, identifier, semicolon */
+{                  /* open-brace */
+    return x * x;  /* keyword `return`, identifier, asterisk, identifier, semicolon */
+}                  /* close-brace */
+```
+
+The syntactic groupings of C include the expression, the statement, the declaration, and the function definition. These are represented in the grammar of C by nonterminal symbols *expression*, *statement*, *declaration* and *function definition*. The full grammar uses dozens of additional language constructs, each with its own nonterminal symbol, in order to express the meanings of these four. The example above is a function definition; it contains one declaration, and one statement. In the statement, each *x* is an expression and so is *x * x*.
+
+Each nonterminal symbol must have grammatical rules showing how it is made out of simpler constructs. For example, one kind of C statement is the `return` statement; this would be described with a grammar rule which reads informally as follows: A *statement* can be made of a `return` keyword, an *expression* and a *semicolon*. There would be many other rules for *statement*, one for each kind of statement in C.
+
+One nonterminal symbol must be distinguished as the special one which defines a complete utterance in the language. It is called the *start symbol*. In a compiler, this means a complete input program. In the C language, the nonterminal symbol *sequence of definitions and declarations* plays this role.
+
+For example `1 + 2` is a valid C expression (a valid part of a C program) but it is not valid as an entire C program. In the context-free grammar of C, this follows from the fact that *expression* is not the start symbol.
+
+The Bison parser reads a sequence of tokens as its input, and groups the tokens using the grammar rules. If the input is valid, the end result is that the entire token sequence reduces to a single grouping whose symbol is the grammar’s start symbol. If we use a grammar for C, the entire input must be a `sequence of definitions and declarations`. If not, the parser reports a syntax error.
+
+## From Formal Rules to Bison Input
+
+A formal grammar is a mathematical construct. To define the language for Bison, you must write a file expressing the grammar in Bison syntax: a **Bison grammar** file.
+
+A nonterminal symbol in the formal grammar is represented in Bison input as an identifier, like an identifier in C. By convention, it should be in lower case, such as `expr`, `stmt` or `declaration`.
+
+The Bison reprensentation for a terminal symbol is also called a **token type**. Toke types as well can be represented as C-like identifiers. By convention, these identifiers should be upper case to distinguish them from nonterminals: for example, `INTEGER`, `IDENTIFIER`, `IF` or `RETURN`. A terminal symbol that stands for a particular keyword in the language should be named after that keyword converted to upper case. The terminal symbol `error` is reserved for error recovery.
+
+A terminal symbol can be represented as a character literal, just like a C character constant. You should do this whenever a token is just a single character (parenthesis, plus-sign, etc.): use that same character in a literal as the terminal symbol for that token.
+
+A third way to represent a terminal symbol is with a C string constant containing several characters.
+
+The grammar rules also have an expression in Bison syntax. For example, here is the Bison rule for a C `return` statement. The semicolon in quotes is a literal character token, representing part of the C syntax for the statement; the naked semicolon, and the colon, are Bison punctuation used in every rule.
+
+```
+stmt:    RETURN expr ';'
+         ;
+```
+
+## Semantic Values
+
+## Semantic Actions 
+
 # Jison
 
 [https://github.com/zaach/jison](https://github.com/zaach/jison)
@@ -809,3 +865,8 @@ Statement = 'id' '=' Expression function(id, _, _exp) {
 	return new imports.ast.Assigment(id, exp);
 }
 ```
+
+# Examples
+
+* [https://github.com/stanistan/aql-parser-js](https://github.com/stanistan/aql-parser-js)
+* [https://github.com/asimihsan/tablequeryjs](https://github.com/asimihsan/tablequeryjs)
